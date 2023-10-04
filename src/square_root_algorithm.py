@@ -86,10 +86,10 @@ def jacobi_rotation(A: Matrix, epsilon: float = 1e-6) -> tuple[Matrix, Matrix]:
     eigen_vectors.generate_identity()
 
     while max_elem > epsilon:
-        if A[p, p] != A[p, q]:
-            phi = math.atan(2 * A[p, q] / (A[p, p] - A[q, q])) / 2
-        else:
+        if abs(A[p, p] - A[p, q]) < 1e-6:
             phi = math.pi / 4
+        else:
+            phi = math.atan(2 * A[p, q] / (A[p, p] - A[q, q])) / 2
 
         # Rotation matrix
         U = Matrix(n, n)
