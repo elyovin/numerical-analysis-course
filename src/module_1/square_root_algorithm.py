@@ -86,10 +86,10 @@ def jacobi_rotation(A: Matrix, epsilon: float = 1e-6) -> tuple[Matrix, Matrix]:
     eigen_vectors.generate_identity()
 
     while max_elem > epsilon:
-        if A[p, p] != A[p, q]:
-            phi = math.atan(2 * A[p, q] / (A[p, p] - A[q, q])) / 2
-        else:
+        if abs(A[p, p] - A[p, q]) < 1e-6:
             phi = math.pi / 4
+        else:
+            phi = math.atan(2 * A[p, q] / (A[p, p] - A[q, q])) / 2
 
         # Rotation matrix
         U = Matrix(n, n)
@@ -111,8 +111,9 @@ def jacobi_rotation(A: Matrix, epsilon: float = 1e-6) -> tuple[Matrix, Matrix]:
 
 
 def task() -> None:
-    A = Matrix(4, 4)
-    b = Matrix(4, 1)
+    n = 4
+    A = Matrix(n, n)
+    b = Matrix(n, 1)
     matrix = [
         [8, -5, 4, 4],
         [-5, -1, 3, -7],
@@ -127,18 +128,23 @@ def task() -> None:
     solver.solve(A, b)
     solver.print_solution()
     my_eigen_values, my_eigen_vectors = jacobi_rotation(A)
-    print(
-        'My eigen values: ', my_eigen_values.transpose(),
-        'My eigen vectors: ', my_eigen_vectors,
-        sep='\n',
-    )
+
+    print('\nMy eigen values and eigen vectors:')
+    for i in range(n):
+        print(
+            f'lambda_{i+1}={my_eigen_values[i, 0]}',
+            f'v_{i+1}={my_eigen_vectors.transpose()[i]}\n',
+            sep='\n'
+        )
 
     eigen_values, eigen_vectors = np.linalg.eig(matrix)
-    print(
-        'True eigen values:', eigen_values,
-        'True eigen vectors:', eigen_vectors,
-        sep='\n'
-    )
+    print('\nTrue eigen values and eigen vectors')
+    for i in range(n):
+        print(
+            f'lambda_{i+1}={eigen_values[i]}',
+            f'v_{i+1}={eigen_vectors[:, i]}\n',
+            sep='\n'
+        )
 
     max_eigen, min_eigen = -float('inf'), float('inf')
     for i in range(len(eigen_values)):
@@ -152,4 +158,3 @@ def task() -> None:
         np.linalg.cond(matrix),
         sep='\n'
     )
-    

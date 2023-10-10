@@ -123,12 +123,13 @@ class Matrix:
 
     def __getitem__(self, indices):
         if not isinstance(indices, tuple):
-            indices = tuple(indices)
+            indices = (indices,)
 
         assert 1 <= len(indices) <= 2, 'Number of indices must be equal 2'
 
         if len(indices) == 1:
-            result = self._matrix[indices[0]]
+            result = Matrix(1, self.n_cols)
+            result._matrix = [self._matrix[indices[0]]]
         else:
             result = self._matrix[indices[0]][indices[1]]
         return result
