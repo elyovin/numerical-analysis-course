@@ -1,7 +1,10 @@
+import sys
+sys.path.append('../')
+
 import copy
 import numpy as np
 
-from matrix_utils import Matrix
+from module_1.matrix_utils import Matrix
 
 
 class GaussianElimination:
