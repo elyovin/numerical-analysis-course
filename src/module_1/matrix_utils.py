@@ -10,12 +10,12 @@ class Matrix:
             [0 for _ in range(self.n_cols)] for _ in range(self.n_rows)
         ]
 
-    def enter_by_number(self):
+    def enter_by_number(self) -> Self:
         for i in range(self.n_rows):
             for j in range(self.n_cols):
                 self[i, j] = float(input())
 
-        return self._matrix
+        return self
 
     def add_column(self, column: Self) -> None:
         """
