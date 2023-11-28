@@ -178,3 +178,7 @@ def task() -> None:
     solver_identity.fit(x_start, x_end, n)
     solver_identity.visualize('Интерполяция линейной функции кубическими сплайнами')
     print_table(x_values, identity, solver_identity)
+
+
+if __name__ == '__main__':
+    task()

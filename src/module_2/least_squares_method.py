@@ -154,8 +154,10 @@ def task() -> None:
         f'{residuals_cube_sum: <12.3f}',
         sep=' | '
     )
-        
 
+
+if __name__ == '__main__':
+    task()
     
         
     

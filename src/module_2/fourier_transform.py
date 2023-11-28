@@ -69,7 +69,6 @@ def task() -> None:
     n = 9
     freq = 1000
     N = 2 ** n
-    t = np.arange(0, N, 1) / freq
     x = tabulate(n, freq)
     
     transformer = FourierTransform()
@@ -140,5 +139,9 @@ def task() -> None:
     )
     axs[2, 2].set_title('Обратное БПФ \nконтрольного БПФ')
 
-    fig.tight_layout()
-    fig.show()
+    plt.tight_layout()
+    plt.show()
+
+
+if __name__ == '__main__':
+    task()
