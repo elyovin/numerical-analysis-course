@@ -13,7 +13,7 @@ class FourierTransform:
     def get_spectral_density(self, x: np.ndarray) -> np.ndarray:
         return (x * np.conj(x)).real / len(x)
 
-    def fast_transform(self, x: np.ndarray, freq: int, n: int) -> Self:
+    def transform(self, x: np.ndarray, freq: int, n: int) -> Self:
         N = 2 ** n  # length of signal
 
         self.dft_solution = np.zeros(N, dtype=np.complex64)
@@ -23,7 +23,7 @@ class FourierTransform:
 
         return self
 
-    def transform(self, x: np.ndarray, freq: int, n: int) -> Self:
+    def fast_transform(self, x: np.ndarray, freq: int, n: int) -> Self:
         N = 2 ** n  # length of signal
 
         # Bit reverse order
@@ -31,7 +31,7 @@ class FourierTransform:
         for i in range(N):
             p = i
             for j in range(1, n + 1):
-                permutation[i] += 2 ** (n - j) * (p - 2 * (p // 2))
+                permutation[i] += 2 ** (n - j) * (p - (p // 2) * 2)
                 p //= 2
         self.fft_solution = x[permutation].astype(np.complex64)
         
@@ -53,10 +53,13 @@ class FourierTransform:
 
 def tabulate(n: int, freq: int) -> np.ndarray:
     t = np.arange(start=0, stop=2 ** n, step=1) / freq
+    freq_1 = 50 * (10 % 3 + 1)
+    freq_2 = 120 * (10 % 2 + 1)
+    freq_3 = 30 * (10 % 5 + 1)
     x = (
-        np.sin(2 * np.pi * 50 * (10 % 3 + 1) * t)
-        + np.sin(2 * np.pi * 120 * (10 % 2 + 1) * t)
-        + np.sin(2 * np.pi * 30 * (10 % 5 + 1) * 5)
+        np.sin(2 * np.pi * freq_1 * t)
+        + np.sin(2 * np.pi * freq_2 * t)
+        + np.sin(2 * np.pi * freq_3 * t)
         + (10 % 3 + 1) * np.random.randn(len(t))
     )
     return x
@@ -78,68 +81,64 @@ def task() -> None:
     x_fft_check = scipy.fft.fft(x)
     x_plot = freq * np.arange(N // 2) / N
 
+    fig, axs = plt.subplots(3, 3)
+
     # Plot original signal
-    plt.plot(x[:N])
-    plt.title('Исходный сигнал')
-    plt.show()
+    axs[0, 0].plot(x[:N])
+    axs[0, 0].set_title('Исходный сигнал')
     
     # Plot real part of DFT
-    plt.plot(
+    axs[0, 1].plot(
         x_plot,
         x_fft_check.real[:N // 2]
     )
-    plt.title('Действительная часть ДПФ')
-    plt.show()
+    axs[0, 1].set_title('Действительная часть ДПФ')
 
     # Plot imaginary part of DFT
-    plt.plot(
+    axs[0, 2].plot(
         x_plot,
         x_fft_check.imag[:N // 2] 
     )
-    plt.title('Мнимая часть ДПФ')
-    plt.show()
+    axs[0, 2].set_title('Мнимая часть ДПФ')
 
     # Plot implemented DFT
-    plt.plot(
+    axs[1, 0].plot(
         x_plot,
         transformer.get_spectral_density(x_dft)[:N // 2]
     )
-    plt.title('Реализованное ДПФ')
-    plt.show()
+    axs[1, 0].set_title('Реализованное ДПФ')
 
     # Plot implemented FFT
-    plt.plot(
+    axs[1, 1].plot(
         x_plot,
         transformer.get_spectral_density(x_fft)[:N // 2]
     )
-    plt.title('Реализованное БПФ')
-    plt.show()
+    axs[1, 1].set_title('Реализованное БПФ')
 
     # Plot control FFT
-    plt.plot(
+    axs[1, 2].plot(
         x_plot,
         transformer.get_spectral_density(x_fft_check)[:N // 2]
     )
-    plt.title('Контрольное БПФ')
-    plt.show()
+    axs[1, 2].set_title('Контрольное БПФ')
    
     # Plot inverse FFT of implemented DFT
-    plt.plot(
+    axs[2, 0].plot(
         scipy.fft.ifft(x_dft).real
     )
-    plt.title('Обратное БПФ реализованного ДПФ')
-    plt.show()
+    axs[2, 0].set_title('Обратное БПФ \nреализованного ДПФ')
 
     # Plot inverse FFT of implemented DFT
-    plt.plot(
+    axs[2, 1].plot(
         scipy.fft.ifft(x_fft).real
     )
-    plt.title('Обратное БПФ реализованного БПФ')
-    plt.show()
+    axs[2, 1].set_title('Обратное БПФ \nреализованного БПФ')
     
     # Plot inverse FFT of control FFT
-    plt.plot(
+    axs[2, 2].plot(
         scipy.fft.ifft(x_fft_check).real
     )
-    plt.title('Обратное БПФ контрольного БПФ')
-    plt.show()
+    axs[2, 2].set_title('Обратное БПФ \nконтрольного БПФ')
+
+    fig.tight_layout()
+    fig.show()

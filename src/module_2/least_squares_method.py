@@ -96,7 +96,7 @@ def tabulate(f: Callable, start: float, end: float,
 
 def task() -> None:
     def f(x: float) -> float:
-        return np.tan(x)
+        return np.tanh(x)
 
     x_start, x_end = 0, 2
     x_values, y_values = tabulate(f, x_start, x_end)
@@ -111,7 +111,7 @@ def task() -> None:
     # Square
     ls_square = LeastSquaresMethod(2)
     ls_square.fit(x_values, y_values)
-    ls_square.visualize('Интерполяция квадратной функцией')
+    ls_square.visualize('Интерполяция квадратичной функцией')
     residuals_square = ls_square.get_residuals(x_values, y_values)
     residuals_square_sum = sum(residuals_square[0, i] ** 2 for i in range(residuals_square.n_cols))
     

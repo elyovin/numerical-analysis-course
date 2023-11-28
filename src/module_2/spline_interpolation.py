@@ -17,7 +17,6 @@ class CubicSplineInterpolation:
 
     def _get_c_coefs(self, n: int, h: float, y: list) -> list:
         right_side = [0] * (n + 1)
-        right_side[0], right_side[-1] = 0, 0
 
         for i in range(1, n):
             right_side[i] = (y[i - 1] - 2 * y[i] + y[i + 1]) / h
@@ -161,7 +160,7 @@ def print_table(x_values: list, f: Callable, solver: CubicSplineInterpolation) -
 
 def task() -> None:
     def f(x: float) -> float:
-        return np.tan(x)
+        return np.tanh(x)
 
     def identity(x: float) -> float:
         return x
@@ -171,7 +170,7 @@ def task() -> None:
     h = (x_end - x_start) / n
     solver = CubicSplineInterpolation(f)
     solver.fit(x_start, x_end, n)
-    solver.visualize('Интерполяция тангенса кубическими сплайнами')
+    solver.visualize('Интерполяция tanh(x) кубическими сплайнами')
     x_values = [x_start + (i - 0.5) * h for i in range(1, n + 1)]
     print_table(x_values, f, solver)
 
